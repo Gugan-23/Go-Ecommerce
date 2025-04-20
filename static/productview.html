@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product View</title>
+</head>
+<body>
+  <div id="product-details"></div>
+  
+  <script>
+    // Extract the product ID from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get("id");
+
+    // Fetch the product details based on the ID
+    async function getProductDetails() {
+      try {
+        const res = await fetch(`/api/products/${productId}`);
+        const product = await res.json();
+
+        if (res.ok) {
+          displayProductDetails(product);
+        } else {
+          document.getElementById("product-details").innerHTML = "Product not found.";
+        }
+      } catch (err) {
+        console.error("Error fetching product details:", err);
+      }
+    }
+
+    // Display the product details on the page
+    function displayProductDetails(product) {
+      const container = document.getElementById("product-details");
+      container.innerHTML = `
+        <h2>${product.name}</h2>
+        <img src="${product.ImageURL || 'https://via.placeholder.com/300x200'}" alt="Product Image">
+        <p><strong>Description:</strong> ${product.description}</p>
+        <p><strong>Price:</strong> ₹${product.price}</p>
+        <button onclick="addToCart(${JSON.stringify(product)})">Add to Cart</button>
+        <button class="btn" onclick="placeOrder()">Place Order</button>
+
+      `;
+    }
+
+    // Call the function to fetch and display product details
+    getProductDetails();
+    
+    async function addToCart(product) {
+      try {
+        const res = await fetch("/api/cart/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(product)
+        });
+
+        if (res.ok) {
+          alert("✅ Added to cart!");
+        } else {
+          alert("❌ Failed to add to cart.");
+        }
+      } catch (err) {
+        console.error("Error adding to cart:", err);
+      }
+    }
+
+   
+  function placeOrder() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    fetch("/api/orders/place", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ product_id: productId })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Order failed");
+        return response.text();
+    })
+    .then(data => {
+        alert("Order placed successfully!");
+        window.location.href = "/my_orders.html";
+    })
+    .catch(err => {
+        console.error("Error placing order:", err);
+        alert("Failed to place order.");
+    });
+}
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Confirmation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .order-card {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+    }
+    .order-card h2 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    .order-details {
+      text-align: left;
+      margin-top: 1rem;
+    }
+    .order-details p {
+      margin: 0.5rem 0;
+    }
+    .server-url {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+    .pay-btn {
+      margin-top: 1.5rem;
+    }
+    .pay-btn a {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background-color 0.3s;
+    }
+    .pay-btn a:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="order-card">
+    <h2>Order Placed Successfully ✅</h2>
+    <div class="order-details">
+      <p><strong>Order ID:</strong> <span id="orderId">Loading...</span></p>
+      <p><strong>User ID:</strong> <span id="userId">Loading...</span></p>
+      <p><strong>Amount:</strong> ₹<span id="amount">Loading...</span></p>
+      <p><strong>Status:</strong> <span id="status">Loading...</span></p>
+    </div>
+    <div class="server-url">
+      Server: <span id="serverUrl">http://localhost:5005</span>
+    </div>
+    <div class="pay-btn">
+      <a href="#" id="payLink">Pay Bill</a>
+    </div>
+  </div>
+
+  <script>
+    function getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+  
+    const orderData = {
+      orderId: getQueryParam("orderId"),
+      userId: getQueryParam("userId"),
+      amount: parseInt(getQueryParam("amount")),
+      status: getQueryParam("status"),
+      port: 5005
+    };
+  
+    document.getElementById("orderId").textContent = orderData.orderId;
+    document.getElementById("userId").textContent = orderData.userId;
+    document.getElementById("amount").textContent = orderData.amount;
+    document.getElementById("status").textContent = orderData.status;
+    document.getElementById("serverUrl").textContent = `http://localhost:${orderData.port}`;
+  
+    if (orderData.status.toLowerCase() === "paid") {
+      document.getElementById("payLink").style.display = "none";
+    }
+  
+    document.getElementById("payLink").addEventListener("click", async function (event) {
+      event.preventDefault();
+  
+      try {
+        // Step 1: Fetch the token from server using username
+        const tokenRes = await fetch("http://localhost:5000/getToken", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+    userId: "67fe2ec68cb8473a63701abf"  // ✅ This MUST match the expected field name
+  })
+})
+        const tokenData = await tokenRes.json();
+  
+        if (!tokenData.success || !tokenData.token) {
+          alert("Failed to fetch token: " + tokenData.message);
+          return;
+        }
+  
+        const token = tokenData.token;
+  
+        // Step 2: Send payment request using that token
+        const paymentRes = await fetch("http://localhost:5000/pay", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            orderId: orderData.orderId,
+            amount: orderData.amount
+          })
+        });
+  
+        const text = await paymentRes.text();
+        try {
+          const result = JSON.parse(text);
+          if (paymentRes.ok) {
+            alert(`Payment successful: ₹${orderData.amount}`);
+            window.location.reload();
+          } else {
+            alert(`Error: ${result.message || text}`);
+          }
+        } catch {
+          alert("Server Error: " + text);
+        }
+  
+      } catch (err) {
+        console.error("Error during payment:", err);
+        alert("Error occurred. Check console.");
+      }
+    });
+  </script>
+  
+
+</body>
+</html>

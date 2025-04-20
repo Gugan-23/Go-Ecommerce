@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR & Redirect Buttons</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #qrcode {
+      margin-top: 20px;
+    }
+
+    #confirm-section {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>QR Generator & Redirect</h2>
+
+  <div id="payment-details"></div>
+
+  <!-- Button 1: Generate QR -->
+  <button onclick="generateQR()">Generate QR Code for Amount</button>
+
+  <!-- Button 2: Redirect -->
+  <button onclick="redirectUser()">Go to Dashboard</button>
+
+  <div id="qrcode"></div>
+
+  <!-- Terminate QR -->
+  <div id="confirm-section">
+    <button onclick="terminateQR()">Confirm Payment</button>
+  </div>
+
+  <div id="status-message"></div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId');
+    const amount = urlParams.get('amount');
+
+    document.getElementById("payment-details").innerHTML = `
+      <h3>Proceeding with payment</h3>
+      <p><strong>Order ID:</strong> ${orderId}</p>
+      <p><strong>Amount:</strong> ₹${amount}</p>
+    `;
+
+    function generateQR() {
+      const qrDiv = document.getElementById("qrcode");
+      qrDiv.innerHTML = "";
+
+      new QRCode(qrDiv, {
+        text: amount,
+        width: 200,
+        height: 200
+      });
+
+      // Show confirm button
+      document.getElementById("confirm-section").style.display = "block";
+    }
+
+    function terminateQR() {
+      // Hide QR and show success message
+      document.getElementById("qrcode").innerHTML = "";
+      document.getElementById("confirm-section").style.display = "none";
+      document.getElementById("status-message").innerHTML = `<p class="success">✅ Payment received for ₹${amount}. QR code terminated.</p>`;
+
+      // Store payment details in MongoDB
+      storePaymentDetails();
+    }
+
+    function storePaymentDetails() {
+      fetch('http://localhost:3001/api/store-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, amount })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Payment stored successfully:', data);
+      })
+      .catch(error => {
+        console.error('Error storing payment:', error);
+      });
+    }
+
+    function redirectUser() {
+      window.location.href = "file:///C:/Users/Administrator/Downloads/golang-project-main/golang-project-main/user-detail.html?username=pranaesh";
+    }
+  </script>
+
+</body>
+</html>

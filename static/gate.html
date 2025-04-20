@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR & Redirect Buttons</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #qrcode {
+      margin-top: 20px;
+    }
+
+    #confirm-section {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .success {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>QR Generator & Redirect</h2>
+
+  <div id="payment-details"></div>
+
+  <!-- Button 1: Generate QR -->
+  <button onclick="generateQR()">Generate QR Code for Amount</button>
+
+  <!-- Button 2: Redirect -->
+  <button onclick="redirectUser()">Go to Dashboard</button>
+  <button onclick="Directpayement()">Direct payment</button>
+
+  <div id="qrcode"></div>
+
+  <!-- Terminate QR -->
+  <div id="confirm-section">
+    <button onclick="terminateQR()">Confirm Payment</button>
+  </div>
+
+  <div id="status-message"></div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId');
+    const amount = urlParams.get('amount');
+    const userId = urlParams.get('userId'); // Assuming userId is passed in URL
+
+    document.getElementById("payment-details").innerHTML = `
+      <h3>Proceeding with payment</h3>
+      <p><strong>Order ID:</strong> ${orderId}</p>
+      <p><strong>user ID:</strong> ${userId}</p>
+     
+      <p><strong>Amount:</strong> ₹${amount}</p>
+    `;
+
+    function generateQR() {
+      const qrDiv = document.getElementById("qrcode");
+      qrDiv.innerHTML = "";
+
+      new QRCode(qrDiv, {
+        text: amount,
+        width: 200,
+        height: 200
+      });
+
+      // Show confirm button
+      document.getElementById("confirm-section").style.display = "block";
+    }
+
+    function terminateQR() {
+      // Hide QR and show success message
+      document.getElementById("qrcode").innerHTML = "";
+      document.getElementById("confirm-section").style.display = "none";
+      document.getElementById("status-message").innerHTML = `<p class="success">✅ Payment received for ₹${amount}. QR code terminated.</p>`;
+
+      // Store payment details in MongoDB and update order
+      storePaymentDetails();
+    }
+
+    function storePaymentDetails() {
+  fetch('http://localhost:3001/api/store-payment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ orderId, amount, userId })
+  })
+  .then(response => {
+    if (!response.ok) {
+      return response.json().then(err => Promise.reject(err));
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Payment stored:', data);
+    // Update UI to reflect success
+    document.getElementById("status-message").innerHTML = `
+      <p class="success">✅ Payment confirmed! Redirecting...</p>
+    `;
+    // Redirect after 2 seconds
+    setTimeout(() => window.location.href = `my_orders`, 2000);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    document.getElementById("status-message").innerHTML = `
+      <p style="color: red">⚠️ Error: ${error.error || 'Failed to confirm payment'}</p>
+    `;
+  });
+
+}
+function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+    function redirectUser() {
+      window.location.href = "http://localhost:8080/my_orders.html";
+    }
+    function Directpayement() {
+      
+  const amount = getQueryParam('amount');
+  const orderId = getQueryParam('orderId');
+  
+  const userId = getQueryParam('userId');
+  const username = "pranaesh"; // Change this dynamically if needed
+  const status = "pending.."; // You can customize this based on your logic
+
+  // Construct the Netlify URL with all query parameters
+  const url = `order.html?username=${username}&userId=${userId}&amount=${amount}&orderId=${orderId}&status=${status}`;
+
+  window.location.href = url;
+}
+
+
+
+  </script>
+
+</body>
+</html>

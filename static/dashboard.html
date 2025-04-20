@@ -1,0 +1,1216 @@
+<!-- static/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - AI eCommerce</title>
+    <style>
+     /* Make the dashboard fixed to the top */
+     * {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: url('https://www.transparenttextures.com/patterns/stardust.png'),
+              linear-gradient(135deg, #fff5e1 0%, #ffe3f5 100%);
+  background-repeat: repeat;
+  color: #333;
+}
+
+/* DASHBOARD STYLING */
+.dashboard {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 20px 0;
+  background: linear-gradient(270deg, #ff4e50, #f9d423, #ff6a00, #ff3cac);
+  background-size: 800% 800%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: gradientFlow 12s ease infinite, slideDown 0.8s ease;
+  color: white;
+  border-bottom: 3px solid #fff3;
+  backdrop-filter: blur(10px);
+  border-radius: 0 0 25px 25px;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.dashboard .btn {
+  background: #fff;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard .btn:hover {
+  background: #333;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+
+/* Poster section */
+.poster-section {
+    margin-top: 120px; /* space below fixed navbar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 200px;
+}
+
+.festival-poster {
+    max-width: 100%;
+    max-height: 450px; /* Reduced height */
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    animation: fadeIn 1.2s ease-in-out;
+    object-fit: contain;
+}
+
+
+/* Fade-in animation for poster */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.container { 
+  max-width: 1200px; 
+  margin: 40px auto; 
+  padding: 0 20px; 
+}
+
+.product-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+  gap: 30px; 
+}
+
+.product-card { 
+  background: white; 
+  border-radius: 12px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); 
+  overflow: hidden; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+  display: flex; 
+  flex-direction: column; 
+  animation: fadeIn 0.5s ease forwards; /* Fade-in effect */
+}
+
+.product-card:hover { 
+  transform: scale(1.05); /* Scale on hover */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12); 
+}
+
+.product-card img { 
+  width: 100%; 
+  height: 200px; 
+  object-fit: cover; 
+}
+
+.product-info { 
+  padding: 15px; 
+  flex: 1; 
+  display: flex; 
+  flex-direction: column; 
+}
+
+.product-title { 
+  font-size: 18px; 
+  font-weight: 600; 
+  margin-bottom: 5px; 
+}
+
+.product-description { 
+  font-size: 14px; 
+  color: #666; 
+  margin-bottom: 10px; 
+  flex-grow: 1; 
+}
+
+.product-price { 
+  font-size: 16px; 
+  font-weight: bold; 
+  color: #10b981; 
+  margin-bottom: 10px; 
+}
+
+.btn { 
+  background-color: #3b82f6; 
+  color: white; 
+  border: none; 
+  padding: 10px; 
+  border-radius: 8px; 
+  cursor: pointer; 
+  font-weight: 600; 
+  text-align: center; 
+  margin-top: 5px; 
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Button transition */
+}
+
+.btn:hover { 
+  background-color: #2563eb; /* Change color on hover */
+  transform: translateY(-2px); /* Lift effect on hover */
+}
+
+@keyframes fadeIn { 
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  } 
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  } 
+}
+/* Main container styling */
+.container {
+  padding: 100px 40px 40px; /* leave space for fixed navbar */
+  text-align: center;
+  background: linear-gradient(to bottom, #f0f8ff, #ffffff);
+  min-height: 100vh;
+}
+
+/* Product grid layout */
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+/* Individual product card */
+.product-card {
+  background-color: #fff;
+  width: 280px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 0.7s ease forwards;
+  opacity: 0;
+}
+
+/* Product card on hover */
+.product-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* Product image */
+.product-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Info section */
+.product-info {
+  padding: 15px;
+}
+
+/* Title and description */
+.product-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0 5px;
+  color: #333;
+}
+
+.product-description {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+/* Price styling */
+.product-price {
+  font-size: 16px;
+  color: #222;
+  margin-bottom: 15px;
+}
+
+/* Buttons */
+.product-info .btn {
+  background-color: #00b894;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 25px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.product-info .btn:hover {
+  background-color: #019874;
+  transform: scale(1.05);
+}
+
+/* Fade-in animation */
+@keyframes fadeInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+.About {
+  padding: 40px 30px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', sans-serif;
+  background: #fdfdfd;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  animation: fadeIn 0.6s ease-in;
+}
+
+.About h1 {
+  font-size: 28px;
+  color: #ff6b81;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.About h2 {
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  color: #2d3436;
+}
+
+.About p, .About li {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.About ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 10px;
+}
+
+.About ul li::before {
+  content: " ";
+  margin-right: 5px;
+  color: #00b894;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.About {
+  padding-bottom: 10px; /* Reduce from 40px or more */
+  margin-bottom: 10px;  /* Reduce the outer margin */
+}
+
+.footer {
+  background-color: #2d3436;
+  color: #fff;
+  padding: 40px 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-section {
+  width: 100%;
+  max-width: 250px;
+}
+
+.footer-section h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #ff6b81;
+}
+
+.footer-section p, .footer-section ul {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.footer-section ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.footer-section ul li {
+  margin-bottom: 8px;
+}
+
+.footer-section ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+  color: #00b894;
+}
+
+.social-icons {
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  gap: 15px;
+}
+
+.social-icons li a {
+  color: #fff;
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.footer-bottom {
+  margin-top: 30px;
+  border-top: 1px solid #444;
+  padding-top: 10px;
+  font-size: 12px;
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+.festival-poster {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.festival-poster.active {
+  opacity: 1;
+}
+:root {
+            --primary-color: #4285F4;
+            --secondary-color: #34A853;
+            --accent-color: #EA4335;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+            --medium-gray: #757575;
+            --chatbot-width: 380px;
+            --chatbot-height: 600px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Google Sans', 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--dark-gray);
+        }
+
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: var(--chatbot-width);
+            height: var(--chatbot-height);
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateY(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .chatbot-container.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .chatbot-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+        }
+
+        .chatbot-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .chatbot-header .material-icons {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .chatbot-body {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            max-width: 80%;
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: white;
+            color: var(--dark-gray);
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 4px;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        .chatbot-footer {
+            padding: 12px 16px;
+            border-top: 1px solid #e0e0e0;
+            background-color: white;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+        }
+
+        #message-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 24px;
+            outline: none;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        #message-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        #send-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-left: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #send-btn:hover {
+            background-color: #3367d6;
+        }
+
+        .contact-options {
+            display: flex;
+            flex-direction: column;
+            margin-top: 8px;
+        }
+
+        .contact-btn {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin: 4px 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .contact-btn:hover {
+            background-color: var(--light-gray);
+            transform: translateY(-2px);
+        }
+
+        .contact-btn i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+
+        .product-list {
+            margin-top: 8px;
+        }
+
+        .product-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
+            background-color: white;
+        }
+
+        .product-name {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .product-price {
+            color: var(--secondary-color);
+            font-weight: 500;
+            margin: 4px 0;
+        }
+
+        .navigation-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .nav-btn {
+            background-color: white;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 16px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            transition: all 0.3s;
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .chatbot-toggle i {
+            font-size: 28px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--medium-gray);
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
+    
+</head>
+<body>
+
+
+<div class="dashboard">
+    
+  <a href="/dashboard.html" class="btn">🏠 Home</a>
+    <a href="/viewproduct.html" class="btn">🛍️ View Products</a>
+    <a href="/view_cart.html" class="btn">🛒 View Cart</a>
+    <a href="/my_orders.html" class="btn">📦 My Orders</a>
+
+    <a class="btn" href="/chatbot.html">🧠 chatbot</a>
+    <a class="btn" href="/complaint.html"> complaints page</a>
+     <a class="btn" href="/profile.html">👤 Profile</a>
+    <a class="btn" href="/">🚪 Logout</a>
+</div>
+<div class="poster-section">
+    <img src="static/frontsales.png" alt="Festival Poster" class="festival-poster" id="poster1">
+    <img src="static/sales2.png" alt="Festival Poster" class="festival-poster" id="poster2">
+  </div>
+  
+<div class="container">
+    <h2 style="margin-bottom: 20px;">All Products</h2>
+    <div class="product-grid" id="productList"></div>
+  </div>
+  <div class="About">
+    <h1>🎉 Welcome to DGP!</h1>
+    <p>
+      FestiCart is your one-stop destination for all things festive and fabulous. Whether you're gearing up for a college cultural festival, a local celebration, or a themed party — we've got you covered with curated products that bring joy and color to your events.
+    </p>
+    
+    <h2>🌟 What We Offer</h2>
+    <ul>
+      <li>🎨 Unique handmade decor and art pieces</li>
+      <li>🎁 Gift hampers and customizable souvenirs</li>
+      <li>🛍️ Local student-made crafts and merchandise</li>
+      <li>📦 Seamless delivery and order tracking</li>
+    </ul>
+  
+    <h2>🚀 Our Mission</h2>
+    <p>
+      To empower young creators and support local craftsmanship by offering a digital platform where creativity meets celebration. Every product you buy contributes to a community of students, artists, and dreamers.
+    </p>
+  
+    <h2>📌 Why Choose Us?</h2>
+    <ul>
+      <li>✨ 100% festival-focused collections</li>
+      <li>💸 Affordable pricing and flash deals</li>
+      <li>🧠 Smart chatbot support</li>
+      <li>🔒 Secure orders & smooth returns</li>
+    </ul>
+  
+    <p style="margin-top: 30px;">
+      We’re thrilled to be part of your festive journey. Thank you for choosing FestiCart — where every product has a story!
+    </p>
+  </div>
+  
+  <script>
+    let currentIndex = 0;
+    const posters = document.querySelectorAll('.festival-poster');
+
+    // Function to switch posters
+    function switchPoster() {
+      posters[currentIndex].classList.remove('active');  // Remove active class from current image
+      currentIndex = (currentIndex + 1) % posters.length;  // Move to next image, loop back after the last
+      posters[currentIndex].classList.add('active');  // Add active class to the next image
+    }
+
+    // Initially show the first poster
+    posters[currentIndex].classList.add('active');
+
+    // Switch the poster every 5 seconds
+    setInterval(switchPoster, 5000);
+    async function loadProducts() {
+  try {
+    const res = await fetch("/api/products");
+    const products = await res.json();
+
+    const container = document.getElementById("productList");
+    container.innerHTML = "";
+
+    // Only take the first 2 products
+    products.slice(0, 3).forEach(p => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
+        <img src="${p.imageURL || 'https://via.placeholder.com/300x200'}" alt="Product Image">
+        <div class="product-info">
+          <div class="product-title">${p.name}</div>
+          <div class="product-description">${p.description}</div>
+          <div class="product-price">₹${p.price}</div>
+          <button class="btn" onclick='viewproduct()'>View Product</button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  } catch (err) {
+    console.error("Error loading products:", err);
+  }
+}
+
+
+
+
+    
+    function viewproduct() {
+  window.location.href = `/viewproduct.html`;
+}
+    // Load products when the page loads
+    window.onload = loadProducts;
+  </script>
+
+</body>
+<div class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>🌐 About Us</h4>
+        <p>
+          We are your go-to platform for festival products, where creativity and celebrations come together. Join us in making every moment special!
+        </p>
+      </div>
+  
+      <div class="footer-section">
+        <h4>📞 Contact Us</h4>
+        <p>Email: v.gugan16@gmail.com</p>
+        <p>Phone: +91 6369586491</p>
+        <p>Address: 151/54 Coimbatore,Tamilnadu</p>
+      </div>
+  
+      <div class="footer-section">
+        <h4>🔗 Quick Links</h4>
+        <ul>
+          <li><a href="/about.html">About</a></li>
+          <li><a href="/contact.html">Contact</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms & Conditions</a></li>
+        </ul>
+      </div>
+  
+      <div class="footer-section">
+        <h4>📱 Follow Us</h4>
+        <ul class="social-icons">
+          <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
+          <li><a href="https://twitter.com" target="_blank">Twitter</a></li>
+          <li><a href="https://instagram.com" target="_blank">Instagram</a></li>
+          <li><a href="https://linkedin.com" target="_blank">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="chatbot-toggle" id="chatbotToggle">
+      <i class="material-icons">chat</i>
+  </div>
+
+  <div class="chatbot-container" id="chatbotContainer">
+      <div class="chatbot-header">
+          <h2><i class="material-icons">smart_toy</i> E-Commerce Assistant</h2>
+          <button class="close-btn" id="closeChatbot">&times;</button>
+      </div>
+      <div class="chatbot-body" id="chatbotBody">
+          <!-- Messages will appear here -->
+      </div>
+      <div class="chatbot-footer">
+          <div class="input-container">
+              <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off">
+              <button id="send-btn"><i class="material-icons">send</i></button>
+          </div>
+      </div>
+  </div>
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          const chatbotToggle = document.getElementById('chatbotToggle');
+          const chatbotContainer = document.getElementById('chatbotContainer');
+          const closeChatbot = document.getElementById('closeChatbot');
+          const chatbotBody = document.getElementById('chatbotBody');
+          const messageInput = document.getElementById('message-input');
+          const sendBtn = document.getElementById('send-btn');
+      
+          let isChatbotOpen = false;
+          let waitingForOrderId = false;
+          let waitingForCategory = false;
+          let waitingForNavigation = false;
+      
+          chatbotToggle.addEventListener('click', function () {
+              isChatbotOpen = !isChatbotOpen;
+              chatbotContainer.classList.toggle('active', isChatbotOpen);
+              if (isChatbotOpen && chatbotBody.children.length === 0) {
+                  showWelcomeMessage();
+              }
+          });
+      
+          closeChatbot.addEventListener('click', function () {
+              isChatbotOpen = false;
+              chatbotContainer.classList.remove('active');
+              showGoodbyeMessage();
+          });
+      
+          messageInput.addEventListener('keypress', function (e) {
+              if (e.key === 'Enter') {
+                  sendMessage();
+              }
+          });
+      
+          sendBtn.addEventListener('click', sendMessage);
+      
+          function sendMessage() {
+              const messageText = messageInput.value.trim();
+              if (messageText === '') return;
+      
+              addMessage('user', messageText);
+              messageInput.value = '';
+              showTypingIndicator();
+      
+              setTimeout(() => {
+                  processUserMessage(messageText);
+              }, 1000);
+          }
+      
+          function addMessage(type, content, metadata = null) {
+              const messageDiv = document.createElement('div');
+              messageDiv.className = `message ${type}-message`;
+      
+              const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+              messageDiv.innerHTML = `
+                  <div>${content.replace(/\n/g, '<br>')}</div>
+                  <div class="message-time">${time}</div>
+              `;
+      
+              if (metadata === 'contact_options') {
+                  const contactOptions = document.createElement('div');
+                  contactOptions.className = 'contact-options';
+                  contactOptions.innerHTML = `
+                      <div class="contact-btn" onclick="handleContactOption('call')">
+                          <i class="material-icons">call</i>
+                          <span>Call Us</span>
+                      </div>
+                      <div class="contact-btn" onclick="handleContactOption('whatsapp')">
+                          <i class="material-icons">chat</i>
+                          <span>WhatsApp</span>
+                      </div>
+                      <div class="contact-btn" onclick="handleContactOption('email')">
+                          <i class="material-icons">email</i>
+                          <span>Email Us</span>
+                      </div>
+                  `;
+                  messageDiv.appendChild(contactOptions);
+              }
+      
+              chatbotBody.appendChild(messageDiv);
+              chatbotBody.scrollTop = chatbotBody.scrollHeight;
+          }
+      
+          function showTypingIndicator() {
+              const typingDiv = document.createElement('div');
+              typingDiv.className = 'typing-indicator';
+              typingDiv.id = 'typingIndicator';
+              typingDiv.innerHTML = `
+                  <div class="typing-dot"></div>
+                  <div class="typing-dot"></div>
+                  <div class="typing-dot"></div>
+              `;
+              chatbotBody.appendChild(typingDiv);
+              chatbotBody.scrollTop = chatbotBody.scrollHeight;
+          }
+      
+          function hideTypingIndicator() {
+              const typingIndicator = document.getElementById('typingIndicator');
+              if (typingIndicator) typingIndicator.remove();
+          }
+      
+          function processUserMessage(message) {
+              hideTypingIndicator();
+      
+              const orderIdMatch = message.match(/\b[a-f0-9]{24}\b/);
+              if (orderIdMatch) {
+                  const orderId = orderIdMatch[0];
+                  handleOrderTracking(orderId);
+                  return;
+              }
+      
+              if (waitingForOrderId) {
+                  handleOrderTracking(message);
+                  waitingForOrderId = false;
+                  return;
+              }
+      
+              if (waitingForCategory) {
+                  handleProductCategory(message);
+                  waitingForCategory = false;
+                  return;
+              }
+      
+              if (waitingForNavigation) {
+                  handleNavigation(message);
+                  waitingForNavigation = false;
+                  return;
+              }
+      
+              handleUserInput(message);
+      
+              fetch('/api/chat', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ message: message })
+              })
+                  .then(response => response.json())
+                  .then(data => {
+                      addMessage(data.type, data.content, data.metadata);
+      
+                      if (data.content.includes("order ID")) {
+                          waitingForOrderId = true;
+                      } else if (data.content.includes("category")) {
+                          waitingForCategory = true;
+                      } else if (data.content.includes("Where would you like to go")) {
+                          waitingForNavigation = true;
+                      }
+      
+                      if (data.metadata === "fetch_products") {
+                          const possibleDescriptions = ["laptop", "phone", "earphones", "electronics", "home appliances"];
+                          const lastUserMessage = document.querySelector('.user-message:last-child div')?.textContent.toLowerCase() || "";
+                          const match = possibleDescriptions.find(desc => lastUserMessage.includes(desc));
+                          if (match) {
+                              handleProductCategory(match);
+                          }
+                      }
+                  })
+                  .catch(error => {
+                      console.error('Error:', error);
+                      addMessage('bot', "Sorry, I'm having trouble connecting to the server. Please try again later.");
+                  });
+          }
+      
+          function handleUserInput(input) {
+              input = input.trim().toLowerCase();
+      
+              if (input.includes("product") || input.includes("phone") || input.includes("laptop")) {
+                  handleProductCategory(input);
+              } else if (input.includes("order")) {
+                  addMessage('bot', "Please provide your order ID.");
+                  waitingForOrderId = true;
+              } else if (input.includes("complain")) {
+                  handleComplaint(input);
+              } else if (input.includes("track") && input.match(/[a-f0-9]{24}/)) {
+                  const id = input.match(/[a-f0-9]{24}/)[0];
+                  trackComplaintStatus(id);
+              } else if (input.includes("contact")) {
+                  addMessage('bot', "Here are our contact options:", "contact_options");
+              } else {
+                  addMessage('bot', "🤖 I'm here to help! You can say things like:\n• I want to complain about a product\n• Track my complaint <complaint-id>\n• Show me laptops");
+              }
+          }
+      
+          function handleOrderTracking(orderId) {
+              fetch(`/api/track-order?order_id=${encodeURIComponent(orderId)}`)
+                  .then(response => response.ok ? response.json() : Promise.reject(response))
+                  .then(order => {
+                      const statusMessage = `🧾 Order for "${order.name}" is currently: ${order.status}. Price: ₹${order.price}`;
+                      addMessage('bot', statusMessage);
+                  })
+                  .catch(() => {
+                      addMessage('bot', "❌ Couldn't find that order. Please check the ID and try again.");
+                  });
+          }
+      
+          function handleProductCategory(description) {
+              fetch(`/api/products?description=${encodeURIComponent(description)}`)
+                  .then(response => response.ok ? response.json() : Promise.reject(response))
+                  .then(products => {
+                      const productList = document.createElement('div');
+                      productList.className = 'product-list';
+      
+                      products.forEach(product => {
+                          const productItem = document.createElement('div');
+                          productItem.className = 'product-item';
+                          productItem.innerHTML = `
+                              <div class="product-name"><strong>${product.name}</strong></div>
+                              <div class="product-price">💰 $${product.price.toFixed(2)}</div>
+                              <div class="product-desc">📝 ${product.description}</div>
+                          `;
+                          productList.appendChild(productItem);
+                      });
+      
+                      const messageDiv = document.createElement('div');
+                      messageDiv.className = 'message bot-message';
+                      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+                      messageDiv.innerHTML = `
+                          <div>📦 Here are the <strong>${description}</strong> products we have:</div>
+                          <div class="message-time">${time}</div>
+                      `;
+                      messageDiv.appendChild(productList);
+      
+                      chatbotBody.appendChild(messageDiv);
+                      chatbotBody.scrollTop = chatbotBody.scrollHeight;
+                  })
+                  .catch(() => {
+                      addMessage('bot', "❌ Sorry, I couldn't find any products in that category.");
+                  });
+          }
+      
+          function handleNavigation(destination) {
+              const routes = {
+                  cart: '/view_cart.html',
+                  payment: '/checkout.html',
+                  orders: '/my_orders.html',
+                  home: '/dashboard.html'
+              };
+      
+              destination = destination.toLowerCase();
+              if (routes[destination]) {
+                  addMessage('bot', `Taking you to the ${destination} page...`);
+                  setTimeout(() => {
+                      window.location.href = routes[destination];
+                  }, 1500);
+              } else {
+                  addMessage('bot', "I'm not sure which page you mean. Please try 'Cart', 'Payment', 'Orders', or 'Home'.");
+                  waitingForNavigation = true;
+              }
+          }
+      
+          function showWelcomeMessage() {
+              setTimeout(() => {
+                  addMessage('bot', "Hello! 👋 I'm your e-commerce assistant. How can I help you today?");
+                  setTimeout(() => {
+                      addMessage('bot', "You can ask me about:\n• Product information\n• Order tracking\n• Contact details\n• Website navigation\n• Complaints\n• And more!");
+                  }, 800);
+              }, 500);
+          }
+      
+          function showGoodbyeMessage() {
+              addMessage('bot', "Thanks for chatting with me! If you have more questions, just click the chat icon. Have a great day! 😊");
+          }
+      
+          window.handleContactOption = function (option) {
+              fetch('/api/contact')
+                  .then(response => response.json())
+                  .then(contactInfo => {
+                      switch (option) {
+                          case 'call':
+                              window.location.href = `tel:${contactInfo.phone}`;
+                              break;
+                          case 'whatsapp':
+                              window.open(`https://wa.me/${contactInfo.whatsapp}`, '_blank');
+                              break;
+                          case 'email':
+                              window.location.href = `mailto:${contactInfo.email}`;
+                              break;
+                      }
+                  })
+                  .catch(() => {
+                      addMessage('bot', "Sorry, I couldn't retrieve our contact details. Please try again later.");
+                  });
+          };
+      
+          window.handleComplaint = function (description) {
+              fetch('/api/complaints', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ customer_id: 'current_user', description })
+              })
+                  .then(res => res.json())
+                  .then(data => {
+                      addMessage('bot', `✅ Complaint recorded! Your complaint ID is: ${data.id}`);
+                  })
+                  .catch(() => {
+                      addMessage('bot', "⚠️ Failed to submit complaint. Try again later.");
+                  });
+          };
+      
+          window.trackComplaintStatus = function (id) {
+              fetch(`/api/complaints/${id}`)
+                  .then(res => res.json())
+                  .then(data => {
+                      addMessage('bot', `📄 Complaint Details:\nStatus: ${data.status}\nDescription: ${data.description}\nDate: ${new Date(data.created_at).toLocaleString()}`);
+                  })
+                  .catch(() => {
+                      addMessage('bot', "❌ Complaint ID not found. Please try again.");
+                  });
+          };
+      });
+      </script>
+    <div class="footer-bottom">
+      <p>&copy; 2025 DGP. All rights reserved.</p>
+    </div>
+  </div>
+  
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Cart</title>
+    <meta charset="UTF-8">
+    <style>
+        
+body {
+  margin: 0;
+  background: url('https://www.transparenttextures.com/patterns/stardust.png'),
+              linear-gradient(135deg, #fff5e1 0%, #ffe3f5 100%);
+  background-repeat: repeat;
+  color: #333;
+}
+
+/* DASHBOARD STYLING */
+.dashboard {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 20px 0;
+  background: linear-gradient(270deg, #ff4e50, #f9d423, #ff6a00, #ff3cac);
+  background-size: 800% 800%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: gradientFlow 12s ease infinite, slideDown 0.8s ease;
+  color: white;
+  border-bottom: 3px solid #fff3;
+  backdrop-filter: blur(10px);
+  border-radius: 0 0 25px 25px;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.dashboard .btn {
+  background: #fff;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard .btn:hover {
+  background: #333;
+  color: #fff;
+  transform: scale(1.05);
+}
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .cart-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .cart-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 300px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cart-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .cart-card h3 {
+      margin: 10px 0 5px;
+    }
+
+    .cart-card p {
+      margin: 4px 0;
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+    }
+
+    .cart-card .price {
+      font-size: 18px;
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .cart-card .actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    .btn-delete {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .btn-view {
+      background-color: #007bff;
+      color: white;
+    }
+
+    
+
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+    
+        <a href="/dashboard.html" class="btn">🏠 Home</a>
+          <a href="/viewproduct.html" class="btn">🛍️ View Products</a>
+          <a href="/view_cart.html" class="btn">🛒 View Cart</a>
+          <a href="/my_orders.html" class="btn">📦 My Orders</a>
+      
+          <a class="btn" href="/chatbot.html">🧠 chatbot</a>
+          
+          <a class="btn" href="/complaint.html"> complaints page</a>
+           <a class="btn" href="/profile.html">👤 Profile</a>
+          <a class="btn" href="/">🚪 Logout</a>
+      </div>
+      
+    <h2>Your Shopping Cart</h2>
+    
+    <div class="cart-container" id="cartContainer">
+        <!-- Cards will be inserted here -->
+      </div>
+    
+      <script>
+        window.onload = function () {
+          fetch("/api/cart")
+            .then(res => {
+              if (!res.ok) throw new Error("Failed to fetch cart");
+              return res.json();
+            })
+            .then(cartItems => {
+              const container = document.getElementById("cartContainer");
+              container.innerHTML = "";
+              if (Array.isArray(cartItems)) {
+                cartItems.forEach(item => {
+                  const card = `
+                    <div class="cart-card">
+                      <img src="${item.imageurl}" alt="${item.name}" />
+                      <h3>${item.name}</h3>
+                      <p>${item.description}</p>
+                      <p class="price">₹${item.price}</p>
+                      <div class="actions">
+                        <button class="btn btn-delete" onclick="deleteCartItem('${item._id}')">🗑️ Delete</button>
+                        <button class="btn btn-view" onclick="viewProduct('${item.product_id}')">🔍 View</button>
+                      </div>
+                    </div>
+                  `;
+                  container.innerHTML += card;
+                });
+              }
+            })
+            .catch(err => {
+              console.error("Error loading cart:", err);
+            });
+        };
+    
+        function deleteCartItem(cartItemId) {
+          fetch(`/api/cart/${cartItemId}`, {
+            method: "DELETE"
+          })
+          .then(res => {
+            if (!res.ok) throw new Error("Delete failed");
+            alert("🗑️ Item deleted!");
+            window.location.reload();
+          })
+          .catch(err => {
+            console.error("Error deleting item:", err);
+          });
+        }
+    
+        function viewProduct(productId) {
+          window.location.href = `static/productview.html?id=${productId}`;
+        }
+      </script></body>
+</html>

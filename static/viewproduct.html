@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>All Products | AI eCommerce</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+   * {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: url('https://www.transparenttextures.com/patterns/stardust.png'),
+              linear-gradient(135deg, #fff5e1 0%, #ffe3f5 100%);
+  background-repeat: repeat;
+  color: #333;
+}
+
+/* DASHBOARD STYLING */
+.dashboard {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 20px 0;
+  background: linear-gradient(270deg, #ff4e50, #f9d423, #ff6a00, #ff3cac);
+  background-size: 800% 800%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: gradientFlow 12s ease infinite, slideDown 0.8s ease;
+  color: white;
+  border-bottom: 3px solid #fff3;
+  backdrop-filter: blur(10px);
+  border-radius: 0 0 25px 25px;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.dashboard .btn {
+  background: #fff;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard .btn:hover {
+  background: #333;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* HEADER (Optional) */
+header {
+  background: #1e293b;
+  color: white;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: 500;
+}
+
+/* MAIN CONTAINER */
+.container {
+  max-width: 1200px;
+  margin: 140px auto 40px; /* Adjusted for fixed dashboard */
+  padding: 0 20px;
+}
+
+/* SEARCH BAR */
+input#searchInput {
+  margin-bottom: 40px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid #ff6a00;
+  width: 100%;
+  font-size: 16px;
+}
+
+/* PRODUCT GRID */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+/* PRODUCT CARD */
+.product-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.product-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.product-info {
+  padding: 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #ff3c3c;
+}
+
+.product-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+  flex-grow: 1;
+}
+
+.product-price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #10b981;
+  margin-bottom: 10px;
+}
+
+/* BUTTONS */
+.btn {
+  background-color: #ff6a00;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(255, 106, 0, 0.3);
+  margin-top: 5px;
+}
+
+.btn:hover {
+  background-color: #ee0979;
+  transform: scale(1.07) rotate(-1deg);
+  box-shadow: 0 5px 15px rgba(255, 0, 100, 0.4);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+  </style>
+</head>
+<body>
+
+  <div class="dashboard">
+    
+  <a href="/dashboard.html" class="btn">🏠 Home</a>
+    <a href="/viewproduct.html" class="btn">🛍️ View Products</a>
+    <a href="/view_cart.html" class="btn">🛒 View Cart</a>
+    <a href="/my_orders.html" class="btn">📦 My Orders</a>
+
+    <a class="btn" href="/chatbot.html">🧠 chatbot</a>
+    
+    <a class="btn" href="/complaint.html"> complaints page</a>
+     <a class="btn" href="/profile.html">👤 Profile</a>
+    <a class="btn" href="/">🚪 Logout</a>
+</div>
+
+<div class="container">
+  <h2 style="margin-bottom: 20px;">All Products</h2>
+  <input type="text" id="searchInput" placeholder="Search products..." style="padding: 8px; width: 200px;">
+  <button onclick="searchProducts()" style="padding: 8px;">Search</button>
+  <div class="product-grid" id="productList"></div>
+</div>
+<script>
+  let allProducts = []; // Store all products here
+
+  async function loadProducts() {
+    try {
+      const res = await fetch("/api/products");
+      allProducts = await res.json(); // Store all products
+      displayProducts(allProducts);
+    } catch (err) {
+      console.error("Error loading products:", err);
+    }
+  }
+
+  function displayProducts(products) {
+    const container = document.getElementById("productList");
+    container.innerHTML = "";
+
+    if (products.length === 0) {
+      container.innerHTML = "<p>No products found.</p>";
+      return;
+    }
+
+    products.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.innerHTML = `
+      <img src="${p.imageurl ? p.imageurl : 'https://via.placeholder.com/300x200'}" alt="Product Image">
+      <div class="product-info">
+        <div class="product-title">${p.name}</div>
+        <div class="product-title">ID: ${p.id}</div>
+        <div class="product-description">${p.description}</div>
+        <div class="product-price">₹${p.price}</div>
+        <button class="btn" onclick='addToCart(${JSON.stringify(p)})'>Add to Cart</button>
+        <button class="btn" onclick='placeYourOrder(${JSON.stringify(p)})'>Place Order</button>
+        <button class="btn" onclick='viewProduct("${p.id}")'>View Product</button>
+      </div>
+    `;
+    container.appendChild(card);
+});
+
+  
+  }
+
+  function searchProducts() {
+    const searchValue = document.getElementById("searchInput").value.toLowerCase();
+    const filtered = allProducts.filter(product =>
+      product.name.toLowerCase().includes(searchValue) ||
+      product.description.toLowerCase().includes(searchValue)
+    );
+    displayProducts(filtered);
+  }
+
+  async function addToCart(product) {
+    try {
+      const res = await fetch("/api/cart/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(product)
+      });
+
+      const responseData = await res.json();
+
+      if (res.ok) {
+        alert("✅ Added to cart!");
+      } else {
+        console.error("Error response:", responseData);
+        alert("❌ Failed to add to cart.");
+      }
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+    }
+  }
+  function displayProducts(products) {
+  const container = document.getElementById("productList");
+  container.innerHTML = "";
+
+  if (products.length === 0) {
+    container.innerHTML = "<p>No products found.</p>";
+    return;
+  }
+
+  products.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.innerHTML = `
+      <img src="${p.imageURL || 'https://via.placeholder.com/300x200'}" alt="Product Image">
+      <div class="product-info">
+        
+        <div class="product-title">${p.name}</div>
+        <div class="product-title">ID: ${p.id}</div> 
+        <div class="product-description">${p.description}</div>
+        <div class="product-price">₹${p.price}</div>
+        <button class="btn" onclick='addToCart(${JSON.stringify(p)})'>Add to Cart</button>
+        <button class="btn" onclick='placeYourOrder(${JSON.stringify(p)})'>Place Order</button>
+        <button class="btn" onclick='viewProduct("${p.id}")'>View Product</button>
+
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+  async function placeYourOrder(product) {
+    try {
+      const res = await fetch("/api/orders/place", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(product)
+      });
+
+      if (res.ok) {
+        alert("✅ Order placed successfully!");
+      } else {
+        alert("❌ Failed to place order.");
+      }
+    } catch (err) {
+      console.error("Error placing order:", err);
+    }
+  }
+  
+  function viewProduct(productId, productImageUrl) {
+    console.log("Product ID:", productId);
+    console.log("Product Image URL:", productImageUrl);
+    // You can now use both the productId and productImageUrl
+    window.location.href = `static/productview.html?id=${productId}`;
+}
+
+
+
+  // Load products when the page loads
+  window.onload = loadProducts;
+</script>
+
+</body>
+</html>

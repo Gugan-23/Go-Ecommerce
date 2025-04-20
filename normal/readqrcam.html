@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scan QR from Webcam</title>
+  <script src="https://unpkg.com/jsqr/dist/jsQR.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    video {
+      width: 400px;
+      height: auto;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+    canvas {
+      display: none;
+    }
+    #qr-result {
+      font-weight: bold;
+      color: green;
+    }
+    #camera-select {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Scan QR Code with Webcam</h2>
+  <select id="camera-select"></select>
+  <br>
+  <video id="video" autoplay></video>
+  <p id="qr-result">Waiting for QR code...</p>
+  <canvas id="qr-canvas"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const result = document.getElementById('qr-result');
+    const canvas = document.getElementById('qr-canvas');
+    const ctx = canvas.getContext('2d');
+    const cameraSelect = document.getElementById('camera-select');
+    let scanning = true;
+    let currentStream = null;
+
+    function drawLine(begin, end, color) {
+      ctx.beginPath();
+      ctx.moveTo(begin.x, begin.y);
+      ctx.lineTo(end.x, end.y);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = color;
+      ctx.stroke();
+    }
+
+    async function listCameras() {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cameras = devices.filter(device => device.kind === 'videoinput');
+
+      cameraSelect.innerHTML = '';
+      cameras.forEach((camera, index) => {
+        const option = document.createElement('option');
+        option.value = camera.deviceId;
+        option.text = camera.label || `Camera ${index + 1}`;
+        cameraSelect.appendChild(option);
+      });
+    }
+
+    async function startCamera(deviceId = null) {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+      }
+
+      const constraints = {
+        video: deviceId ? { deviceId: { exact: deviceId } } : { facingMode: "environment" },
+        audio: false
+      };
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        currentStream = stream;
+        video.srcObject = stream;
+        video.setAttribute("playsinline", true);
+        video.play();
+        scanning = true;
+        requestAnimationFrame(scanFrame);
+      } catch (err) {
+        console.error('Camera access error:', err);
+        result.textContent = `Camera error: ${err.message}`;
+      }
+    }
+
+    function scanFrame() {
+      if (video.readyState === video.HAVE_ENOUGH_DATA && scanning) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, canvas.width, canvas.height);
+
+        if (code) {
+          drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
+          drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
+          drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
+          drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
+
+          const qrData = code.data.trim();
+          result.textContent = `QR Code Content: ${qrData}`;
+          scanning = false;
+
+          // Stop the camera stream
+          if (currentStream) {
+            currentStream.getTracks().forEach(track => track.stop());
+          }
+
+          // If content is a valid number (8 or more digits), redirect
+         if (/^\d+$/.test(qrData)) {
+  // Auto-send money to 'admin' using QR code value as amount
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    result.textContent = "Not logged in. Please log in first.";
+    return;
+  }
+
+  fetch("http://localhost:5000/send-money", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ recipientUsername: "admin", amount: parseFloat(qrData) })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      result.textContent = `₹${qrData} sent to presh successfully!`;
+    } else {
+      result.textContent = data.message || "Transaction failed.";
+    }
+  })
+  .catch(err => {
+    console.error("Error:", err);
+    result.textContent = "Server error during transaction.";
+  });
+} else {
+  result.textContent = "Invalid QR Code content.";
+}
+          return;
+        }
+      }
+      requestAnimationFrame(scanFrame);
+    }
+
+    cameraSelect.addEventListener('change', () => {
+      const selectedId = cameraSelect.value;
+      startCamera(selectedId);
+    });
+
+    (async () => {
+      await listCameras();
+      const firstDeviceId = cameraSelect.options[0]?.value;
+      if (firstDeviceId) {
+        startCamera(firstDeviceId);
+      } else {
+        startCamera(); // fallback to default
+      }
+    })();
+  </script>
+
+</body>
+</html>

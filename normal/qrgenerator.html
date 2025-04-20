@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    
+    <!-- Load jQuery first -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Then load the qrcode.js plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+</head>
+<body>
+    <h2>QR Code Generator</h2>
+    
+    <label for="content">Enter content for QR Code:</label>
+    <input type="text" id="content" placeholder="Enter text or URL" />
+    
+    <button onclick="generateQRCode()">Generate QR Code</button>
+    
+    <div id="qrcode"></div>
+
+    <script>
+        function generateQRCode() {
+            // Clear the previous QR code
+            document.getElementById("qrcode").innerHTML = "";
+
+            // Get the content from the input field
+            var content = document.getElementById("content").value;
+
+            // Check if content is provided
+            if (content) {
+                // Create a new QR code using the jQuery plugin
+                $("#qrcode").qrcode(content);
+            } else {
+                alert("Please enter some content.");
+            }
+        }
+    </script>
+</body>
+</html>

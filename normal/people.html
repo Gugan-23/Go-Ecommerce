@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>People on Nutto Social</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .user-button {
+      display: block;
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #e0f7fa;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>People on Nutto Social</h2>
+  <div id="usersContainer">Loading users...</div>
+
+  <script>
+    fetch("http://localhost:5000/all-users")
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const container = document.getElementById("usersContainer");
+          container.innerHTML = "";
+
+          data.users.forEach(user => {
+            const button = document.createElement("button");
+            button.className = "user-button";
+            button.textContent = user.username;
+            button.onclick = () => {
+              window.location.href = `user-detail.html?username=${user.username}`;
+            };
+            container.appendChild(button);
+          });
+        } else {
+          document.getElementById("usersContainer").innerText = "Unable to load users.";
+        }
+      })
+      .catch(err => {
+        console.error("Fetch error:", err);
+        document.getElementById("usersContainer").innerText = "Server error.";
+      });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Orders</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .order-container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .order {
+      border-bottom: 1px solid #ddd;
+      padding: 20px 0;
+    }
+    .order:last-child {
+      border-bottom: none;
+    }
+    .order img {
+      width: 100px;
+      border-radius: 8px;
+      margin-right: 20px;
+    }
+    .order-details {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .info {
+      flex-grow: 1;
+    }
+    .pay-button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .pay-button:hover {
+      background-color: #218838;
+    }
+    .status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .profile-info {
+      background: #fff;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    
+    * {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: url('https://www.transparenttextures.com/patterns/stardust.png'),
+              linear-gradient(135deg, #fff5e1 0%, #ffe3f5 100%);
+  background-repeat: repeat;
+  color: #333;
+}
+
+/* DASHBOARD STYLING */
+.dashboard {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 20px 0;
+  background: linear-gradient(270deg, #ff4e50, #f9d423, #ff6a00, #ff3cac);
+  background-size: 800% 800%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: gradientFlow 12s ease infinite, slideDown 0.8s ease;
+  color: white;
+  border-bottom: 3px solid #fff3;
+  backdrop-filter: blur(10px);
+  border-radius: 0 0 25px 25px;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.dashboard .btn {
+  background: #fff;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard .btn:hover {
+  background: #333;
+  color: #fff;
+  transform: scale(1.05);
+}
+.order-details {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  padding: 16px;
+  margin: 20px auto;
+  max-width: 600px;
+  transition: transform 0.2s ease;
+}
+
+.order-details:hover {
+  transform: scale(1.01);
+}
+
+.order-details img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.order-details .info {
+  padding: 0 10px;
+}
+
+.order-details h3 {
+  font-size: 22px;
+  color: #333;
+  margin: 8px 0;
+}
+
+.order-details p {
+  font-size: 15px;
+  color: #666;
+  margin: 6px 0;
+}
+
+.order-details .status {
+  font-weight: bold;
+  color: #f39c12;
+}
+
+.pay-button {
+  margin-top: 16px;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 500;
+  transition: background 0.3s ease;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.pay-button:hover {
+  background: linear-gradient(to right, #0072ff, #00c6ff);
+}
+@media (max-width: 600px) {
+  .order-details {
+    padding: 12px;
+  }
+
+  .order-details h3 {
+    font-size: 18px;
+  }
+
+  .pay-button {
+    width: 100%;
+    margin: 8px 0 0;
+  }
+}
+
+
+
+  </style>
+</head>
+<body>
+
+  <div class="dashboard">
+    
+    <a href="/dashboard.html" class="btn">🏠 Home</a>
+      <a href="/viewproduct.html" class="btn">🛍️ View Products</a>
+      <a href="/view_cart.html" class="btn">🛒 View Cart</a>
+      <a href="/my_orders.html" class="btn">📦 My Orders</a>
+  
+      <a class="btn" href="/chatbot.html">🧠 chatbot</a>
+      
+      <a class="btn" href="/complaint.html"> complaints page</a>
+       <a class="btn" href="/profile.html">👤 Profile</a>
+      <a class="btn" href="/">🚪 Logout</a>
+  </div>
+  <header>
+    <h1>🛒 My Orders</h1>
+  </header>
+
+  <div class="profile-info">
+    <h2>User Profile</h2>
+    <p id="username"></p>
+    <p id="userrole"></p>
+    <p id="userid"></p>
+  </div>
+
+  <div class="order-container" id="ordersContainer">
+    <!-- Orders will be dynamically loaded here -->
+  </div>
+
+  <script>
+    window.onload = function () {
+      fetch("/api/user/profile", {
+        method: 'GET',
+        credentials: 'same-origin'
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch profile");
+        return res.json();
+      })
+      .then(user => {
+        document.getElementById("username").innerText = "Username: " + user.username;
+        document.getElementById("userrole").innerText = "Role: " + user.role;
+        document.getElementById("userid").innerText = "User ID: " + user._id;
+      })
+      .catch(error => {
+        console.error("❌ Error loading profile:", error);
+        document.querySelector(".profile-info").innerHTML = "<p>Error loading user profile.</p>";
+      });
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      fetch("/api/orders")
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById("ordersContainer");
+          if (data.length === 0) {
+            container.innerHTML = "<p>No orders yet.</p>";
+            return;
+          }
+
+          data.forEach(order => {
+            const orderDiv = document.createElement("div");
+            orderDiv.className = "order";
+
+            const isPaid = order.status && order.status.toLowerCase() === 'paid';
+
+            orderDiv.innerHTML = `
+              <div class="order-details">
+                <img src="${order.imageURL}" alt="${order.name}" />
+                <div class="info">
+                  <h3>${order.name}</h3>
+                  <p>${order.description}</p>
+                  <p><strong>Price:</strong> ₹${order.price.toFixed(2)}</p>
+                  <p class="status">Status: ${order.status || "Pending Payment"}</p>
+                </div>
+                ${isPaid 
+  ? `
+    <a class="pay-button" href="/track.html?orderId=${order.id}">Track Order</a>
+    <button class="pay-button" onclick="viewBill('${order.id}')">View Bill</button>
+    `
+  : `
+    <button class="pay-button" onclick="payNow('${order.id}', ${order.price})">Pay Now</button>
+    `
+}
+
+            `;
+
+            container.appendChild(orderDiv);
+          });
+        });
+    });
+
+    function payNow(orderId, amount) {
+      const encodedId = encodeURIComponent(orderId);
+      const encodedAmount = encodeURIComponent(amount);
+      const status = encodeURIComponent("pending");
+
+      fetch('/api/user/profile')
+        .then(res => res.json())
+        .then(profileData => {
+          const userId = profileData._id;
+          if (!userId) {
+            alert("User is not logged in.");
+            return;
+          }
+
+          const paymentURL = `static/gate.html?orderId=${encodedId}&amount=${encodedAmount}&status=${status}&userId=${userId}`;
+          window.location.href = paymentURL;
+        })
+        .catch(err => {
+          console.error('Error fetching user profile:', err);
+          alert('Failed to retrieve user profile.');
+        });
+    }
+
+    function viewBill(orderId) {
+  window.location.href = `/static/viewbill.html?orderId=${encodeURIComponent(orderId)}`;
+}
+
+  </script>
+
+</body>
+</html>

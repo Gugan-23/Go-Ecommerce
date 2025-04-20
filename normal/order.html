@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Confirmation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .order-card {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+    }
+    .order-card h2 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    .order-details {
+      text-align: left;
+      margin-top: 1rem;
+    }
+    .order-details p {
+      margin: 0.5rem 0;
+    }
+    .server-url {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+    .pay-btn {
+      margin-top: 1.5rem;
+    }
+    .pay-btn a {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background-color 0.3s;
+    }
+    .pay-btn a:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="order-card">
+    <h2>Order Placed Successfully ✅</h2>
+    <div class="order-details">
+      <p><strong>Order ID:</strong> <span id="orderId">123456</span></p>
+      <p><strong>User ID:</strong> <span id="userId">user789</span></p>
+      <p><strong>Amount:</strong> ₹<span id="amount">1500</span></p>
+      <p><strong>Status:</strong> <span id="status">Pending</span></p>
+    </div>
+    <div class="server-url">
+      Server: <span id="serverUrl">http://localhost:5005</span>
+    </div>
+    <div class="pay-btn">
+      <a href="#" id="payLink">Pay Bill</a>
+    </div>
+  </div>
+
+  <script>
+    // Order data initialization
+    const orderData = {
+      orderId: "ORD101202",
+      userId: "USR7788",
+      amount: 2499,
+      status: "Pending",  // Initially set to "Pending"
+      port: 5005
+    };
+
+    // Fetch the order status from the backend
+    fetch(`http://localhost:5000/order-status/${orderData.orderId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success && data.status === "Paid") {
+          // If the status is "Paid", update the UI and hide the Pay Bill button
+          document.getElementById("status").textContent = "Paid";
+          document.getElementById("payLink").style.display = "none";
+        } else {
+          // Otherwise, update the status as "Pending"
+          document.getElementById("status").textContent = "Pending";
+        }
+      })
+      .catch(error => {
+        console.error("Error fetching order status:", error);
+        alert("Error fetching order status.");
+      });
+
+    // Populate the order data in the HTML
+    document.getElementById("orderId").textContent = orderData.orderId;
+    document.getElementById("userId").textContent = orderData.userId;
+    document.getElementById("amount").textContent = orderData.amount;
+    document.getElementById("serverUrl").textContent = `http://localhost:${orderData.port}`;
+
+    // When user clicks "Pay Bill"
+    document.getElementById("payLink").addEventListener("click", function (event) {
+      event.preventDefault();  // Prevent default anchor action
+
+      // Prepare data for payment
+      const paymentData = {
+        orderId: orderData.orderId,
+        userId: orderData.userId,
+        amount: orderData.amount
+      };
+
+      // Send payment request to the backend (adjust the URL accordingly)
+      fetch("http://localhost:5000/getToken", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({})  // No need to pass user info, just an empty object
+})
+.then(res => res.json())
+.then(data => {
+  if (data.success) {
+    const token = data.token;  // Get the token from the response
+    
+    // Proceed with the payment request
+    const paymentData = {
+      orderId: orderData.orderId,
+      userId: orderData.userId,
+      amount: orderData.amount
+    };
+
+    // Now make the payment request with the token
+    fetch("http://localhost:5000/pay", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(paymentData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert(`Payment of ₹${orderData.amount} successful!`);
+        // Update order status on the page
+        document.getElementById("status").textContent = "Paid";
+        // Hide Pay Bill button
+        document.getElementById("payLink").style.display = "none";
+      } else {
+        alert(`Payment failed: ${data.message}`);
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      alert("An error occurred while processing the payment.");
+    });
+  } else {
+    alert(`Error fetching token: ${data.message}`);
+  }
+})
+.catch(error => {
+  console.error("Error fetching token:", error);
+  alert("An error occurred while fetching the token.");
+});
+    });
+  </script>
+
+</body>
+</html>

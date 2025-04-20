@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .user-card {
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #f1f1f1;
+      max-width: 400px;
+      margin: auto;
+    }
+    input, button {
+      margin-top: 10px;
+      padding: 8px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>User Details</h2>
+  <div class="user-card" id="userDetails">Loading...</div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get("username");
+    const token = localStorage.getItem("token");
+
+    if (!username) {
+      document.getElementById("userDetails").innerText = "No user selected.";
+    } else {
+      fetch(`http://localhost:5000/user/${username}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            const user = data.user;
+            const details = document.getElementById("userDetails");
+            details.innerHTML = `
+              <h3>${user.username}</h3>
+              <p>Email: ${user.email}</p>
+              <p>Balance: ₹${user.balance || 0}</p>
+              <p><strong>Social:</strong><br>${user.socialContent || "<i>No posts yet.</i>"}</p>
+              <input type="number" placeholder="Amount to send" id="amountInput"/>
+              <button onclick="sendMoney('${user.username}')">Send Money</button>
+            `;
+          } else {
+            document.getElementById("userDetails").innerText = "User not found.";
+          }
+        })
+        .catch(err => {
+          console.error("Fetch error:", err);
+          document.getElementById("userDetails").innerText = "Server error.";
+        });
+    }
+
+    function sendMoney(recipientUsername) {
+      const amount = parseFloat(document.getElementById("amountInput").value);
+
+      if (!amount || amount <= 0) {
+        alert("Enter a valid amount.");
+        return;
+      }
+
+      fetch("https://gpay56.onrender.com/send-money", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ recipientUsername, amount })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message || "Transaction completed.");
+        location.reload();
+      })
+      .catch(err => {
+        console.error("Transaction error:", err);
+        alert("Server error.");
+      });
+    }
+  </script>
+
+</body>
+</html>

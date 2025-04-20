@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .payment-card {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 400px;
+      text-align: center;
+    }
+    .payment-card h2 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    .details {
+      text-align: left;
+      margin-top: 1rem;
+    }
+    .details p {
+      margin: 0.5rem 0;
+    }
+    .pay-btn {
+      margin-top: 1.5rem;
+    }
+    .pay-btn button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .pay-btn button:hover {
+      background-color: #218838;
+    }
+    .paid-msg {
+      margin-top: 1.5rem;
+      color: green;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="payment-card">
+    <h2>Complete Your Payment 💳</h2>
+    <div class="details">
+      <p><strong>Order ID:</strong> <span id="orderId"></span></p>
+      <p><strong>User ID:</strong> <span id="userId"></span></p>
+      <p><strong>Amount:</strong> ₹<span id="amount"></span></p>
+      <p><strong>Status:</strong> <span id="status">Pending</span></p>
+      <p><strong>Recipient:</strong> pranaesh</p>
+    </div>
+    <div class="pay-btn">
+      <button onclick="handlePayment()">Pay Now</button>
+    </div>
+    <div class="paid-msg" id="paidMsg">✅ Payment successful! ₹<span id="paidAmount"></span> sent to pranaesh.</div>
+  </div>
+
+  <script>
+    // Get query params
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId') || 'N/A';
+    const userId = urlParams.get('userId') || 'N/A';
+    const amount = parseFloat(urlParams.get('amount')) || 0;
+
+    // Display initial values
+    document.getElementById('orderId').textContent = orderId;
+    document.getElementById('userId').textContent = userId;
+    document.getElementById('amount').textContent = amount.toFixed(2);
+
+    // Handle payment
+    function handlePayment() {
+ // Collect order and user data for payment
+const orderId = "ORD101202";  // This can be dynamically fetched
+const amount = 2499;  // This should be passed from the order data
+
+// Assuming the user is authenticated and the token is available in the browser
+const token = localStorage.getItem("token");  // Or wherever your token is stored
+
+fetch("http://localhost:5000/pay", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  },
+  body: JSON.stringify({ orderId, amount })
+})
+.then(response => response.json())
+.then(data => {
+  if (data.success) {
+    alert(`Payment successful! ₹${amount} sent.`);
+    // Optionally, redirect or update UI after successful payment
+  } else {
+    alert(`Payment failed: ${data.message}`);
+  }
+})
+.catch(error => {
+  console.error("Error:", error);
+  alert("An error occurred while processing the payment.");
+});
+
+}
+
+  </script>
+
+</body>
+</html>

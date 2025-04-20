@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>View Bill</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f9f9f9;
+    }
+    .bill-container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    h2 {
+      color: #333;
+    }
+    .bill-item {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bill-container">
+    
+    <div id="billDetails">Loading...</div>
+    <button><a href=my_orders.html>Back</a></button>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('orderId');
+
+    if (!orderId) {
+      document.getElementById("billDetails").innerText = "Order ID not found in URL.";
+    } else {
+      fetch(`http://localhost:3001/api/orders/${orderId}`)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error("Order not found or failed to load");
+          }
+          return res.json();
+        })
+        .then(order => {
+          document.getElementById("billDetails").innerHTML = `
+            <h2>🧾 Bill for Order ID:</h2>
+            <div class="bill-item"><strong>Order ID:</strong> ${orderId}</div>
+            <div class="bill-item"><strong>Product:</strong> ${order.name}</div>
+            <div class="bill-item"><strong>Description:</strong> ${order.description}</div>
+            <div class="bill-item"><strong>Price:</strong> ₹${order.price.toFixed(2)}</div>
+            <div class="bill-item"><strong>Status:</strong> ${order.status}</div>
+          `;
+        })
+        .catch(err => {
+          console.error("❌ Error loading bill:", err);
+          document.getElementById("billDetails").innerHTML = `<p>❌ Error fetching bill.</p>`;
+        });
+    }
+  </script>
+
+</body>
+</html>
