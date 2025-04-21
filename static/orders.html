@@ -26,6 +26,16 @@
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+    button {
+    padding: 6px 12px;
+    margin: 2px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: rgb(99, 11, 11);
+    font-weight: bold;
+    transition: transform 0.2s ease, background-color 0.3s;
+  }
     .order {
       border-bottom: 1px solid #ddd;
       padding: 20px 0;
@@ -90,21 +100,39 @@
             orderDiv.className = "order";
 
             orderDiv.innerHTML = `
-              <div class="order-details">
-                <img src="${order.imageURL}" alt="${order.name}" />
-                <div class="info">
-                  <h3>${order.name}</h3>
-                  <p>${order.description}</p>
-                  <p><strong>Price:</strong> ₹${order.price.toFixed(2)}</p>
-                  <p class="status">Status: ${order.status || "Pending Payment"}</p>
-               
-            `;
+  <div class="order-details">
+    <img src="${order.imageURL}" alt="${order.name}" />
+    <div class="info">
+      <h3>${order.name}</h3>
+      <p>${order.description}</p>
+      <p><strong>Price:</strong> ₹${order.price.toFixed(2)}</p>
+      <p class="status">Status: ${order.status || "Pending Payment"}</p>
+    </div>
+    <button class="delete-button" onclick="deleteOrder('${order.id}')">Delete</button>
+  </div>
+`;
+
             container.appendChild(orderDiv);
           });
         });
     });
 
-    
+    function deleteOrder(orderId) {
+  if (confirm("Are you sure you want to delete this order?")) {
+    fetch(`/api/orders/${orderId}`, {
+      method: "DELETE"
+    })
+    .then(res => {
+      if (res.ok) {
+        alert("Order deleted successfully.");
+        location.reload(); // Refresh to reflect the changes
+      } else {
+        alert("Failed to delete order.");
+      }
+    });
+  }
+}
+
     
   </script>
 </body>

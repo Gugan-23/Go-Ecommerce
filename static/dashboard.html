@@ -4,7 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard - AI eCommerce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
     <style>
+      
      /* Make the dashboard fixed to the top */
      * {
   box-sizing: border-box;
@@ -13,7 +19,7 @@
 
 body {
   margin: 0;
-  background: url('https://www.transparenttextures.com/patterns/stardust.png'),
+  background: url('https://img.freepik.com/premium-photo/indian-traditional-festival-background-blank-space-text_612834-1556.jpg'),
               linear-gradient(135deg, #fff5e1 0%, #ffe3f5 100%);
   background-repeat: repeat;
   color: #333;
@@ -104,6 +110,7 @@ body {
   max-width: 1200px; 
   margin: 40px auto; 
   padding: 0 20px; 
+  background: rgb(119, 48, 48);
 }
 
 .product-grid { 
@@ -207,7 +214,7 @@ body {
 
 /* Individual product card */
 .product-card {
-  background-color: #fff;
+  background-color: #8ce476;
   width: 280px;
   border-radius: 20px;
   overflow: hidden;
@@ -724,34 +731,192 @@ body {
         .hidden {
             display: none;
         }
+        
+
+.navbar {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #f8f9fa;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Hamburger styles */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.hamburger div {
+  width: 25px;
+  height: 3px;
+  margin: 4px 0;
+  background-color: #000000;
+  transition: 0.4s;
+}
+
+/* Sidebar (slides from right) */
+.dashboard.mobile {
+  position: fixed;
+  top: 0;
+  right: -250px; /* Initially hidden */
+  width: 250px;
+  height: 100%;
+  background-color: #f8f9fa;
+  padding: 20px;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+  transition: right 0.3s ease;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.dashboard.mobile.active {
+  right: 0;
+}
+.social-icons li a:hover {
+    color: #1da1f2; /* Twitter Blue */
+  }
+
+.dashboard .btn {
+  background: #fff;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard .btn:hover {
+  background: #333;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+
+
+/* Close button */
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #333;
+  cursor: pointer;
+  margin-left: auto;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .dashboard.desktop {
+    display: none;
+  }
+}
+/* Add this to rotate hamburger when menu is active */
+.hamburger.active div:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active div:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active div:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Hide desktop dashboard menu on small screens */
+@media (max-width: 768px) {
+  .dashboard:not(.mobile) {
+    display: none !important;
+  }
+}
+.container {
+  background: linear-gradient(to bottom right, #fdf6e3, #ffeaa7); /* Light festive background */
+  padding: 1px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  color: #333; /* Dark text for contrast */
+  max-width: 1200px;
+  margin: 40px auto;
+}
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  color: white;
+}
+
+.logo img {
+  height: 40px;
+  width: auto;
+}
 
     </style>
     
 </head>
 <body>
-
-
-<div class="dashboard">
-    
-  <a href="/dashboard.html" class="btn">🏠 Home</a>
+  <div class="dashboard">
+    <a href="/dashboard.html" class="btn">🏠 Home</a>
     <a href="/viewproduct.html" class="btn">🛍️ View Products</a>
     <a href="/view_cart.html" class="btn">🛒 View Cart</a>
     <a href="/my_orders.html" class="btn">📦 My Orders</a>
-
-    <a class="btn" href="/chatbot.html">🧠 chatbot</a>
-    <a class="btn" href="/complaint.html"> complaints page</a>
-     <a class="btn" href="/profile.html">👤 Profile</a>
+    <a class="btn" href="/complaint.html">🧠 complaints page</a>
+    
+    <a class="btn" href="static/usercontact.html">Contact</a>
+    <a class="btn" href="/profile.html">👤 Profile</a>
     <a class="btn" href="/">🚪 Logout</a>
-</div>
+  </div>
+  <div class="navbar">
+    <div class="logo">
+      <img src="/static/download.png" alt="Logo" />
+    </div>
+    <div class="hamburger" onclick="toggleMenu()">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  
+    <div class="dashboard mobile" id="mobileMenu">
+      <a href="/dashboard.html" class="btn">🏠 Home</a>
+      <a href="/viewproduct.html" class="btn">🛍️ View Products</a>
+      <a href="/view_cart.html" class="btn">🛒 View Cart</a>
+      <a href="/my_orders.html" class="btn">📦 My Orders</a>
+      <a class="btn" href="/complaint.html">🧠 Complaints Page</a>
+      <a class="btn" href="static/usercontact.html">📞 Contact</a>
+      <a class="btn" href="/profile.html">👤 Profile</a>
+      <a class="btn" href="/">🚪 Logout</a>
+    </div>
+  
+    <!-- Logo on the right -->
+    
+  </div>
+  
+  
+  
 <div class="poster-section">
     <img src="static/frontsales.png" alt="Festival Poster" class="festival-poster" id="poster1">
     <img src="static/sales2.png" alt="Festival Poster" class="festival-poster" id="poster2">
+    <img src="static/sales3.png" alt="Festival Poster" class="festival-poster" id="poster3">
   </div>
   
 <div class="container">
     <h2 style="margin-bottom: 20px;">All Products</h2>
     <div class="product-grid" id="productList"></div>
   </div>
+    
+    
+    
   <div class="About">
     <h1>🎉 Welcome to DGP!</h1>
     <p>
@@ -785,6 +950,22 @@ body {
   </div>
   
   <script>
+   const menu = document.getElementById('mobileMenu');
+  const hamburger = document.querySelector('.hamburger');
+
+  function toggleMenu() {
+    menu.classList.toggle('active');
+  }
+
+  // Close the menu if clicked outside
+  document.addEventListener('click', function(event) {
+    const isClickInsideMenu = menu.contains(event.target);
+    const isClickOnHamburger = hamburger.contains(event.target);
+
+    if (!isClickInsideMenu && !isClickOnHamburger && menu.classList.contains('active')) {
+      menu.classList.remove('active');
+    }
+  });
     let currentIndex = 0;
     const posters = document.querySelectorAll('.festival-poster');
 
@@ -840,42 +1021,7 @@ body {
   </script>
 
 </body>
-<div class="footer">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h4>🌐 About Us</h4>
-        <p>
-          We are your go-to platform for festival products, where creativity and celebrations come together. Join us in making every moment special!
-        </p>
-      </div>
-  
-      <div class="footer-section">
-        <h4>📞 Contact Us</h4>
-        <p>Email: v.gugan16@gmail.com</p>
-        <p>Phone: +91 6369586491</p>
-        <p>Address: 151/54 Coimbatore,Tamilnadu</p>
-      </div>
-  
-      <div class="footer-section">
-        <h4>🔗 Quick Links</h4>
-        <ul>
-          <li><a href="/about.html">About</a></li>
-          <li><a href="/contact.html">Contact</a></li>
-          <li><a href="/privacy.html">Privacy Policy</a></li>
-          <li><a href="/terms.html">Terms & Conditions</a></li>
-        </ul>
-      </div>
-  
-      <div class="footer-section">
-        <h4>📱 Follow Us</h4>
-        <ul class="social-icons">
-          <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
-          <li><a href="https://twitter.com" target="_blank">Twitter</a></li>
-          <li><a href="https://instagram.com" target="_blank">Instagram</a></li>
-          <li><a href="https://linkedin.com" target="_blank">LinkedIn</a></li>
-        </ul>
-      </div>
-    </div>
+
     <div class="chatbot-toggle" id="chatbotToggle">
       <i class="material-icons">chat</i>
   </div>
@@ -1208,6 +1354,137 @@ body {
           };
       });
       </script>
+      <style>
+        .footer {
+          background: linear-gradient(to right, #0f2027, #203a43, #2c5364); /* Nice festive gradient */
+          color: #fff;
+          padding: 40px 20px 10px;
+          font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .footer-content {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-around;
+          gap: 30px;
+        }
+        
+        .footer-section {
+          flex: 1 1 220px;
+        }
+        
+        .footer-section h4 {
+          font-size: 20px;
+          margin-bottom: 15px;
+          color: #f9c80e;
+          border-bottom: 2px solid #f9c80e;
+          padding-bottom: 5px;
+        }
+        
+        .footer-section p,
+        .footer-section ul,
+        .footer-section li,
+        .footer-section a {
+          color: #ddd;
+          font-size: 14px;
+          text-decoration: none;
+          line-height: 1.6;
+        }
+        
+        .footer-section ul {
+          list-style: none;
+          padding: 0;
+        }
+        
+        .footer-section a:hover {
+          color: #fff;
+          text-shadow: 0 0 5px #f9c80e;
+        }
+        
+        .footer-bottom {
+          text-align: center;
+          margin-top: 40px;
+          border-top: 1px solid rgba(255, 255, 255, 0.2);
+          padding-top: 10px;
+          font-size: 13px;
+          color: #aaa;
+        }
+        
+        .social-icons {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        
+        .social-icons a {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          transition: transform 0.2s ease;
+        }
+        
+        .social-icons a:hover {
+          transform: scale(1.05);
+          color: #f9c80e;
+        }
+        
+        .social-icons i {
+          font-size: 16px;
+          color: #f9c80e;
+        }
+        
+        /* Responsive footer on mobile */
+        @media (max-width: 768px) {
+          .footer-content {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+          }
+        
+          .footer-section {
+            width: 100%;
+            max-width: 400px;
+          }
+        }
+        </style>
+        
+      <div class="footer">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h4>🌐 About Us</h4>
+            <p>
+              We are your go-to platform for festival products, where creativity and celebrations come together. Join us in making every moment special!
+            </p>
+          </div>
+      
+          <div class="footer-section">
+            <h4>📞 Contact Us</h4>
+            <p>Email: v.gugan16@gmail.com</p>
+            <p>Phone: +91 6369586491</p>
+            <p>Address: 151/54 Coimbatore,Tamilnadu</p>
+          </div>
+      
+          <div class="footer-section">
+            <h4>🔗 Quick Links</h4>
+            <ul>
+              <li><a href="/about.html">About</a></li>
+              <li><a href="/contact.html">Contact</a></li>
+              <li><a href="/privacy.html">Privacy Policy</a></li>
+              <li><a href="/terms.html">Terms & Conditions</a></li>
+            </ul>
+          </div>
+      
+          <div class="footer-section">
+            <h4>📱 Follow Us</h4>
+            <ul class="social-icons">
+              <li><a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a></li>
+              <li><a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a></li> <!-- Only icon shown -->
+              <li><a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i> Instagram</a></li>
+              <li><a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i> LinkedIn</a></li>
+            </ul>
+          </div>
+          
+          
     <div class="footer-bottom">
       <p>&copy; 2025 DGP. All rights reserved.</p>
     </div>

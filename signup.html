@@ -3,11 +3,93 @@
 <head>
   <title>Register</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 40px; }
-    form { background: white; padding: 20px; max-width: 400px; margin: auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input, select, button { display: block; width: 100%; margin-bottom: 15px; padding: 10px; font-size: 16px; }
-    button { background-color: #3B82F6; color: white; border: none; cursor: pointer; }
-    button:hover { background-color: #2563EB; }
+    select { display: block; width: 100%; margin-bottom: 15px; padding: 10px; font-size: 16px; }
+   body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #0c1022;
+      background-image: radial-gradient(circle at top, #0c1022 20%, #070a1e 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    form {
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid #00f0ff;
+      box-shadow: 0 0 25px #00f0ff, 0 0 60px #00f0ff inset;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 320px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #00f0ff;
+      text-shadow: 0 0 10px #00f0ff;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1.2rem;
+      border: none;
+      border-radius: 6px;
+      background: #081129;
+      color: #00f0ff;
+      font-size: 1rem;
+      outline: none;
+      box-shadow: 0 0 10px #00f0ff inset;
+    }
+
+    input::placeholder {
+      color: #00f0ff80;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      background-color: transparent;
+      color: #00f0ff;
+      border: 2px solid #00f0ff;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff inset;
+    }
+
+    button:hover {
+      background-color: #00f0ff;
+      color: #000;
+      box-shadow: 0 0 20px #00f0ff, 0 0 40px #00f0ff;
+    }
+
+    .error {
+      color: red;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .link a {
+      color: #00f0ff;
+      text-decoration: none;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Autoplay Audio</title>
+  <script>
+    window.onload = function() {
+      var audio = document.getElementById('bgMusic');
+      audio.muted = false;  // Unmute on load
+      audio.play();  // Start playing the audio
+    };
+  </script>
+</head>
+<body>
+  <h1>Welcome to the Complaint Portal</h1>
+
+  <!-- Autoplay with muted initially -->
+  <audio id="bgMusic" autoplay loop muted>
+    <source src="/static/Manasilaayo.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+</body>
+</html>

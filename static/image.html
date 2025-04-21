@@ -59,6 +59,14 @@
       font-size: 16px;
     }
 
+    #preview {
+      margin-top: 20px;
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+
     footer {
       background: #232f3e;
       color: white;
@@ -66,6 +74,41 @@
       padding: 1rem;
       margin-top: 40px;
     }
+
+    .filter-grayscale {
+      filter: grayscale(100%);
+    }
+
+    .filter-blur {
+      filter: blur(3px);
+    }
+
+    .filter-sobel {
+      filter: contrast(200%) brightness(150%) grayscale(1); /* fake sobel effect */
+    }
+/* Image preview styles */
+#preview {
+  margin-top: 20px;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  display: none;
+}
+
+/* Filter preview effects */
+.filter-grayscale {
+  filter: grayscale(100%);
+}
+
+.filter-blur {
+  filter: blur(3px);
+}
+
+.filter-sobel {
+  filter: contrast(200%) brightness(150%) grayscale(1); /* simulated Sobel */
+}
+
   </style>
 </head>
 <body>
@@ -84,7 +127,7 @@
     <h2>Upload and Process Image</h2>
     <form action="/upload" method="post" enctype="multipart/form-data">
       <label for="image">Choose an image:</label>
-      <input type="file" name="image" id="image" required><br><br>
+      <input type="file" name="image" id="image" accept="image/*" required><br><br>
 
       <label for="grayscale">Apply Grayscale:</label>
       <input type="checkbox" name="grayscale" id="grayscale"><br><br>
@@ -97,11 +140,51 @@
 
       <input type="submit" value="Upload and Process">
     </form>
+
+    <!-- Image Preview -->
+    <img id="preview" src="#" alt="Image preview will appear here" style="display:none;">
   </div>
 
   <footer>
     <p>&copy; 2025 AI eCommerce. All rights reserved.</p>
   </footer>
+
+  <script>
+    const imageInput = document.getElementById('image');
+    const preview = document.getElementById('preview');
+    const grayscale = document.getElementById('grayscale');
+    const gaussian = document.getElementById('gaussian');
+    const sobel = document.getElementById('sobel');
+
+    function updateFilter() {
+      preview.className = ''; // Reset filters
+      if (grayscale.checked) {
+        preview.classList.add('filter-grayscale');
+      }
+      if (gaussian.checked) {
+        preview.classList.add('filter-blur');
+      }
+      if (sobel.checked) {
+        preview.classList.add('filter-sobel');
+      }
+    }
+
+    imageInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    grayscale.addEventListener('change', updateFilter);
+    gaussian.addEventListener('change', updateFilter);
+    sobel.addEventListener('change', updateFilter);
+  </script>
 
 </body>
 </html>

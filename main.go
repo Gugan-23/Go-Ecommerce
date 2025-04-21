@@ -6,15 +6,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"go_project/models"
+	"html/template"
 	"image"
 	"image/color"
 	"image/jpeg"
 	"image/png"
 	"io"
 	"log"
+
+	"net/http"
+	"net/smtp"
+
 	"math"
 	"net"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -41,6 +45,8 @@ var (
 	complaintsCollection *mongo.Collection
 	contactCollection    *mongo.Collection
 	productCollection    *mongo.Collection
+
+	tmpl *template.Template
 )
 
 type User struct {
@@ -191,7 +197,16 @@ func handleTCPAuth(conn net.Conn) {
 		conn.Write([]byte("FAIL\n"))
 	}
 }
-
+func autoplayPageHandler(w http.ResponseWriter, r *http.Request) {
+	// Parse and execute the HTML template
+	tmpl, err := template.ParseFiles("templates/autoplay.html") // Ensure the HTML file exists in the templates folder
+	if err != nil {
+		log.Println("Error loading template:", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	tmpl.Execute(w, nil)
+}
 func startWebServer() {
 	r := mux.NewRouter()
 
@@ -210,11 +225,15 @@ func startWebServer() {
 	r.HandleFunc("/manage_product.html", serveStaticPage("static/manage_product.html")).Methods("GET")
 	r.HandleFunc("/edit_product.html", serveStaticPage("static/edit_product.html")).Methods("GET")
 	r.HandleFunc("/track.html", serveStaticPage("static/track.html")).Methods("GET")
-	r.HandleFunc("/orders.html", serveStaticPage("static/orders.html")).Methods("GET")
+	r.HandleFunc("/usercontact.html", serveStaticPage("static/orders.html")).Methods("GET")
 	r.HandleFunc("/chatbot.html", serveStaticPage("static/chatbot.html")).Methods("GET")
 	r.HandleFunc("/contact.html", serveStaticPage("static/contact.html")).Methods("GET")
 	r.HandleFunc("/image.html", serveStaticPage("static/image.html")).Methods("GET")
 	r.HandleFunc("/complaint.html", serveStaticPage("static/complaint.html")).Methods("GET")
+	r.HandleFunc("/api/complaints", submitComplaint).Methods("POST")
+	r.HandleFunc("/api/admin/complaints", getAllComplaints).Methods("GET")
+	r.HandleFunc("/api/admin/complaints/{id}", updateComplaintStatus).Methods("PUT")
+	r.HandleFunc("/api/complaints/{id}/status", getUserComplaint).Methods("GET")
 
 	// Auth
 	r.HandleFunc("/login", loginHandler).Methods("POST")
@@ -242,6 +261,8 @@ func startWebServer() {
 	r.HandleFunc("/api/placeOrder/ai", PlaceOrderH).Methods("POST")
 	r.HandleFunc("/api/products/{name}", deleteProductByName).Methods("DELETE")
 	r.HandleFunc("/api/products/{name}", UpdateProductHandler).Methods("PUT")
+	r.HandleFunc("/api/orders/{id}", deleteOrderHandler).Methods("DELETE")
+
 	r.HandleFunc("/api/dashboard", dashboardHandler).Methods("GET")
 	r.HandleFunc("/api/chat", chatbotHandler).Methods("POST")
 	r.HandleFunc("/api/contact", getContactInfo).Methods("GET")
@@ -259,11 +280,50 @@ func startWebServer() {
 	r.HandleFunc("/upload", handleUpload).Methods("POST")
 
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	r.HandleFunc("/autoplay", autoplayPageHandler).Methods("GET")
+	r.HandleFunc("/send-email", sendEmailHandler)
 
 	fmt.Println("🌐 Web Server running at http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
+func contactForm(w http.ResponseWriter, r *http.Request) {
+	tmpl.Execute(w, nil)
+}
 
+func sendEmailHandler(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Form parsing error", http.StatusBadRequest)
+		return
+	}
+
+	name := r.FormValue("name")
+	email := r.FormValue("email")
+	message := r.FormValue("message")
+
+	body := fmt.Sprintf("Name: %s\nEmail: %s\nMessage:\n%s", name, email, message)
+
+	// Gmail SMTP example
+	from := "h8702643@gmail.com"
+	password := "osxarglpzcircimn" // Enable 2FA and create app password in Google Account
+
+	to := "v.gugan16@gmail.com"
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	msg := []byte("To: " + to + "\r\n" +
+		"Subject: Contact Form Submission\r\n" +
+		"\r\n" + body + "\r\n")
+
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, []string{to}, msg)
+	if err != nil {
+		http.Error(w, "Email sending failed: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprintln(w, "✅ Email sent successfully!")
+}
 func serveStaticPage(path string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, path)
@@ -301,7 +361,28 @@ func deleteCartItem(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Deleted successfully"))
 }
+func deleteOrderHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	orderID := params["id"]
 
+	oid, err := primitive.ObjectIDFromHex(orderID)
+	if err != nil {
+		http.Error(w, "Invalid Order ID", http.StatusBadRequest)
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	result, err := ordersCollection.DeleteOne(ctx, bson.M{"_id": oid})
+	if err != nil {
+		http.Error(w, "Failed to delete order", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(result)
+}
 func getProductByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	idParam := vars["id"]
@@ -931,12 +1012,7 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	startOfDay := time.Now().Truncate(24 * time.Hour)
-	orderCount, err := ordersCollection.CountDocuments(ctx, bson.M{
-		"createdAt": bson.M{
-			"$gte": startOfDay,
-		},
-	})
+	orderCount, err := ordersCollection.CountDocuments(ctx, bson.M{})
 	if err != nil {
 		http.Error(w, "Failed to count today's orders", http.StatusInternalServerError)
 		return
@@ -1316,4 +1392,68 @@ func applySobelFilter(img *image.Gray) *image.Gray {
 		}
 	}
 	return result
+}
+func submitComplaint(w http.ResponseWriter, r *http.Request) {
+	var complaint Complaint
+	if err := json.NewDecoder(r.Body).Decode(&complaint); err != nil {
+		http.Error(w, "Invalid input", http.StatusBadRequest)
+		return
+	}
+	complaint.ID = primitive.NewObjectID()
+	complaint.CreatedAt = time.Now()
+	complaint.Status = "Pending"
+
+	_, err := complaintsCollection.InsertOne(context.TODO(), complaint)
+	if err != nil {
+		http.Error(w, "Failed to save complaint", http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(map[string]string{"id": complaint.ID.Hex()})
+}
+
+func getAllComplaints(w http.ResponseWriter, r *http.Request) {
+	cursor, err := complaintsCollection.Find(context.TODO(), bson.M{})
+	if err != nil {
+		http.Error(w, "Failed to retrieve complaints", http.StatusInternalServerError)
+		return
+	}
+	defer cursor.Close(context.TODO())
+
+	var complaints []Complaint
+	if err := cursor.All(context.TODO(), &complaints); err != nil {
+		http.Error(w, "Failed to parse complaints", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(complaints)
+}
+
+func updateComplaintStatus(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	status := r.URL.Query().Get("status")
+
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		http.Error(w, "Invalid complaint ID", http.StatusBadRequest)
+		return
+	}
+
+	_, err = complaintsCollection.UpdateOne(context.TODO(), bson.M{"_id": objID}, bson.M{"$set": bson.M{"status": status}})
+	if err != nil {
+		http.Error(w, "Failed to update complaint", http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(map[string]string{"message": "Status updated"})
+}
+
+func getUserComplaint(w http.ResponseWriter, r *http.Request) {
+	customerID := mux.Vars(r)["customer_id"]
+	var complaint Complaint
+	err := complaintsCollection.FindOne(context.TODO(), bson.M{"customer_id": customerID}).Decode(&complaint)
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"message": "No complaint found for this ID"})
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(complaint)
 }
