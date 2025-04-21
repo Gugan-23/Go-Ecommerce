@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register</title>
   <style>
-    select { display: block; width: 100%; margin-bottom: 15px; padding: 10px; font-size: 16px; }
-   body {
+    body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
@@ -26,6 +27,7 @@
       width: 320px;
       position: relative;
       z-index: 1;
+      transition: width 0.3s ease;
     }
 
     h2 {
@@ -35,7 +37,7 @@
       text-shadow: 0 0 10px #00f0ff;
     }
 
-    input {
+    input, select {
       width: 100%;
       padding: 0.8rem;
       margin-bottom: 1.2rem;
@@ -90,6 +92,21 @@
     .link a:hover {
       text-decoration: underline;
     }
+
+    /* Mobile adjustments */
+    @media (max-width: 480px) {
+      form {
+        width: 90%;          /* fluid width */
+        padding: 1.2rem;     /* reduce padding */
+      }
+      h2 {
+        font-size: 1.5rem;   /* smaller heading */
+      }
+      input, select, button {
+        padding: 0.6rem;     /* tighter controls */
+        font-size: 0.9rem;   /* smaller font */
+      }
+    }
   </style>
 </head>
 <body>
@@ -98,13 +115,16 @@
     <input type="text" name="name" placeholder="Username" required />
     <input type="password" name="password" placeholder="Password" required />
 
-    <label for="role">Select Role:</label>
+    <label for="role" style="color:#00f0ff;">Select Role:</label>
     <select name="role">
       <option value="user" selected>User</option>
       <option value="admin">Admin</option>
     </select>
 
     <button type="submit">Register</button>
+    <div class="link">
+      <a href="/login">Already have an account? Log in</a>
+    </div>
   </form>
 </body>
 </html>
